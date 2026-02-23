@@ -17,10 +17,10 @@ class DashboardView(View):
         context['latest_projects'] = latest_projects[:5]
         context['number_of_projects'] = latest_projects.count()
         context['number_of_notifications'] = 0
-        if request.user.is_authenticated:
-            latest_notifications = request.user.notifications.unread()
-            context['latest_notifications'] = latest_notifications[:3]
-            context['number_of_notifications'] = latest_notifications.count()
+        # if request.user.is_authenticated:
+        latest_notifications = request.user.notifications.unread()
+        context['latest_notifications'] = latest_notifications[:3]
+        context['number_of_notifications'] = latest_notifications.count()
         context['projects_near_due_date'] = latest_projects.due_soon()[:5]
         context['number_of_tasks'] = latest_tasks.count()
         context['latest_members'] = latest_members[:8]

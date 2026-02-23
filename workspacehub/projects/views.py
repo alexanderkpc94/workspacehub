@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from .models import Project
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from .forms import ProjectForm
 from django.urls import reverse_lazy
 from notifications.task import create_notification
@@ -16,10 +16,10 @@ class ProjectCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #latest_notifications
-        if self.request.user.is_authenticated:
-            latest_notifications = self.request.user.notifications.unread()
-            context['latest_notifications'] = latest_notifications[:3]
-            context['number_of_notifications'] = latest_notifications.count()
+        # if self.request.user.is_authenticated:
+        latest_notifications = self.request.user.notifications.unread()
+        context['latest_notifications'] = latest_notifications[:3]
+        context['number_of_notifications'] = latest_notifications.count()
         
         context['header_text'] = "Project Add"
         return context
@@ -50,3 +50,9 @@ class ProjectCreateView(CreateView):
             transaction.on_commit(enqueue)
             
         return redirect(self.success_url)
+    
+class ProjectListView(ListView):
+    model = Project
+    context_object_name = "projects"
+    template_name = "projects/project_list.html"
+    paginate_by = 2
