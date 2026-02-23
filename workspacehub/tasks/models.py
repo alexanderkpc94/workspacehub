@@ -16,6 +16,18 @@ PRIORITY_CHOICES = [
     ('High', 'High'),
 ]
 
+class TaskQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(active=True)
+    def upcoming(self):
+        return self.filter(due_date__gt=timezone.now())
+
+class TaskManager(models.Manager):
+    def get_queryset(self):
+        return TaskQuerySet(self.model, using=self._db)
+    def all(self):
+        return self.get_queryset().active().upcoming()
+
 
 class Task(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task')
@@ -30,6 +42,8 @@ class Task(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+    
+    objects = TaskManager()
    
     def __str__(self):
         return self.name

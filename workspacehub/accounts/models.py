@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 
 # Create your models here.
@@ -6,9 +7,16 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+#profile picture location
+def profile_image_path_location(instance,filename):
+    # get todays date YYYY-MM-DD format
+    today = datetime.now().strftime('%Y-%m-%d')
+    #return the upload path
+    return "profile_pictures/%s/%s/%s" % (instance.user.username,today,filename)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    profile_picture = models.ImageField(upload_to=profile_image_path_location, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)

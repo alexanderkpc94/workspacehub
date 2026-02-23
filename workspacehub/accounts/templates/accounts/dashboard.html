@@ -6,13 +6,12 @@
           <div class="row">
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-copy"></i></span>
 
                 <div class="info-box-content">
-                  <span class="info-box-text">CPU Traffic</span>
+                  <span class="info-box-text">Projects</span>
                   <span class="info-box-number">
-                    10
-                    <small>%</small>
+                    {{ number_of_projects }}
                   </span>
                 </div>
                 <!-- /.info-box-content -->
@@ -22,11 +21,11 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-tasks"></i></span>
 
                 <div class="info-box-content">
-                  <span class="info-box-text">Likes</span>
-                  <span class="info-box-number">41,410</span>
+                  <span class="info-box-text">Task</span>
+                  <span class="info-box-number">{{ number_of_tasks }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -39,11 +38,11 @@
 
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
 
                 <div class="info-box-content">
-                  <span class="info-box-text">Sales</span>
-                  <span class="info-box-number">760</span>
+                  <span class="info-box-text">Teams</span>
+                  <span class="info-box-number">{{ number_of_teams }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -52,11 +51,11 @@
             <!-- /.col -->
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box mb-3">
-                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-user-plus"></i></span>
 
                 <div class="info-box-content">
-                  <span class="info-box-text">New Members</span>
-                  <span class="info-box-number">2,000</span>
+                  <span class="info-box-text">Members</span>
+                  <span class="info-box-number">{{ number_of_members }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -106,7 +105,7 @@
                                   <th>Description</th>
                                   <th>Status</th>
                                   <th>Priority</th>
-                                  <th>Start Date</th>
+                                  <th>Team</th>
                                   <th>Due In</th>
                                 </tr>
                               </thead>
@@ -121,7 +120,7 @@
                                        <p style="color:{{project.priority_color}}">{{project.priority}}</p>
                                     </div>
                                   </td>
-                                  <td>{{project.start_date}}</td>
+                                  <td>{{project.team}}</td>
                                   <td>{{project.days_until_due}}</td>
                                 </tr>
                                 {% endfor %}
@@ -201,7 +200,7 @@
                       <!-- TABLE: LATEST TASK -->
                       <div class="card">
                         <div class="card-header border-transparent">
-                          <h3 class="card-title">Latest Projects</h3>
+                          <h3 class="card-title">Projects Near Due Date</h3>
 
 
                         </div>
@@ -215,23 +214,22 @@
                                   <th>Description</th>
                                   <th>Status</th>
                                   <th>Priority</th>
-                                  <th>Start Date</th>
                                   <th>Due In</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {% for task in latest_tasks %}
+                                {% for project in projects_near_due_date %}
                                 <tr>
-                                  <td><a href="./pages/examples/task-detail.html">{{task.name}}</a></td>
-                                  <td>{{task.description}}</td>
-                                  <td><span class="badge {% if task.status == 'Completed' %}badge-success{% elif task.status == 'In Progress' %}badge-warning{% else %}badge-info{% endif %}">{{task.status}}</span></td>
+                                  <td><a href="./pages/examples/task-detail.html">{{project.name}}</a></td>
+                                  <td>{{project.description}}</td>
+                                  <td><span class="badge {% if project.status == 'Completed' %}badge-success{% elif project.status == 'In Progress' %}badge-warning{% else %}badge-info{% endif %}">{{project.status}}</span></td>
                                   <td>
                                     <div class="priority" >
-                                       <p style="color:{{task.priority_color}}">{{task.priority}}</p>
+                                       <p style="color:{{project.priority_color}}">{{project.priority}}</p>
                                     </div>
                                   </td>
-                                  <td>{{task.start_date}}</td>
-                                  <td>{{task.days_until_due}}</td>
+                      
+                                  <td>{{project.days_until_due}}</td>
                                 </tr>
                                 {% endfor %}
                               </tbody>
@@ -255,16 +253,16 @@
                       <p class="text-center">
                         <strong>Goal Completion</strong>
                       </p>
-              
+              {% for project in projects_near_due_date %}
                       <div class="progress-group">
-                        Add Products to Cart
-                        <span class="float-right"><b>160</b>/200</span>
+                        {{ project.name }}
+                        <span class="float-right"><b>{{ project.progress_percentage }}</b>/100</span>
                         <div class="progress progress-sm">
-                          <div class="progress-bar bg-primary" style="width: 80%"></div>
+                          <div class="progress-bar bg-{{ project.status_color }}" style="width: {{ project.progress_percentage }}%"></div>
                         </div>
                       </div>
                       <!-- /.progress-group -->
-
+              {% endfor %}
                       
                     </div>
                     <!-- /.col -->
@@ -335,7 +333,7 @@
                       <h3 class="card-title">Notifications</h3>
 
                       <div class="card-tools">
-                        <span title="{{ latest_notifications.count }} New Messages" class="badge badge-warning">{{ latest_notifications.count }}</span>
+                        <span title="{{ number_of_notifications }} New Messages" class="badge badge-warning">{{ latest_notifications.count }}</span>
                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
                           <i class="fas fa-minus"></i>
                         </button>

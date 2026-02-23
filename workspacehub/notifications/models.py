@@ -5,12 +5,12 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 # Create your models here.
 
 class NotificationManager(models.Manager):
-    def for_user(self, user):
-        return self.filter(recipient=user).order_by('-created_at')
-    def unread(self,user):
-        return self.for_user(user).filter(read=False)
-    def read(self,user):
-        return self.for_user(user).filter(read=True)
+    # def for_user(self, user):
+    #     return self.filter(recipient=user).order_by('-created_at')
+    def unread(self):
+        return self.filter(read=False)
+    def read(self):
+        return self.filter(read=True)
 
 class Notification(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
