@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 #import django signals
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from phonenumber_field.modelfields import PhoneNumberField
 #profile picture location
 def profile_image_path_location(instance,filename):
     # get todays date YYYY-MM-DD format
@@ -16,9 +16,11 @@ def profile_image_path_location(instance,filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    job_title = models.CharField(max_length=255, blank=True, null=True)
     profile_picture = models.ImageField(upload_to=profile_image_path_location, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
+    phone = PhoneNumberField(null=True, blank=True, unique=True)
     birth_date = models.DateField(blank=True, null=True)
     joind_date = models.DateTimeField(auto_now_add=True)
 

@@ -60,9 +60,41 @@
             {% endif %}
             <div class="dropdown-divider"></div>
            
-            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            <a href="{% url "notifications:notification-list" %}" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
         </li>
+        
+         <!-- Profile Dropdown Menu -->
+         <li class="nav-item dropdown">
+          <a class="nav-link" data-toggle="dropdown" href="#">
+            <img class="img-circle elevation-2" src="{{ request.user.profile.profile_picture_url }}" height="30" width="30" alt="user picture">
+          </a>
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">Welcome, {{ request.user.profile.full_name }}</span>
+            <div class="dropdown-divider"></div>
+  
+                {% comment %} <a href="{% url "accounts:profile-update" request.user.profile.pk %}" class="dropdown-item">
+                  <i class="fas fa-cog mr-2"></i> Edit Profile
+                </a>
+                <div class="dropdown-divider"></div>
+
+                <a href="{% url "accounts:password-change" %}" class="dropdown-item">
+                  <i class="fas fa-lock mr-2"></i> Change Password
+                </a>
+                <div class="dropdown-divider"></div> {% endcomment %}
+
+              <form action="{% url "logout" %}" method="post">
+                {% csrf_token %}
+                  <button  class="dropdown-item">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                  </button>
+                  <div class="dropdown-divider"></div>
+              </form>
+               
+          </div>
+        </li>
+        
+        
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>

@@ -23,7 +23,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls'), name='accounts'),
     path('projects/', include('projects.urls'), name='projects'),
-    # path('tasks/', include('tasks.urls'), name='tasks'),
+    path('tasks/', include('tasks.urls'), name='tasks'),
+     path('notifications/', include('notifications.urls'), name='notifications'),
+     
+     # authetication
+    path('accounts/', include('django.contrib.auth.urls')),
   
 ]
 

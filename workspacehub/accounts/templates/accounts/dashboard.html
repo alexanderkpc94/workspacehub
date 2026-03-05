@@ -112,7 +112,7 @@
                               <tbody>
                                 {% for project in latest_projects %}
                                 <tr>
-                                  <td><a href="./pages/examples/project-detail.html">{{project.name}}</a></td>
+                                  <td><a href="{% url "projects:project-detail" project.id %}">{{project.name}}</a></td>
                                   <td>{{project.description}}</td>
                                   <td><span class="badge {% if project.status == 'Completed' %}badge-success{% elif project.status == 'In Progress' %}badge-warning{% else %}badge-info{% endif %}">{{project.status}}</span></td>
                                   <td>
@@ -179,7 +179,7 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h5 class="card-title">Tasks</h5>
+                  <h5 class="card-title">Projects Ending Soon</h5>
 
                   <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -220,7 +220,7 @@
                               <tbody>
                                 {% for project in projects_near_due_date %}
                                 <tr>
-                                  <td><a href="./pages/examples/task-detail.html">{{project.name}}</a></td>
+                                  <td><a href="{% url "projects:project-detail" project.id %}">{{project.name}}</a></td>
                                   <td>{{project.description}}</td>
                                   <td><span class="badge {% if project.status == 'Completed' %}badge-success{% elif project.status == 'In Progress' %}badge-warning{% else %}badge-info{% endif %}">{{project.status}}</span></td>
                                   <td>
@@ -240,7 +240,7 @@
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
 
-                          <a href="{% url "projects:list" %}" class="btn btn-sm btn-secondary float-right">View All
+                          <a href="{% url "projects:due-list" %}" class="btn btn-sm btn-secondary float-right">View All
                             Projects</a>
                         </div>
                         <!-- /.card-footer -->
@@ -318,7 +318,7 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer text-center">
-                      <a href="./pages/examples/teams.html">View All Users</a>
+                      <a href="{% url 'accounts:member-list' %}">View All Users</a>
                     </div>
                     <!-- /.card-footer -->
                   </div>
@@ -370,7 +370,9 @@
                       <!--/.direct-chat-messages-->
                     </div>
                     <!-- /.card-body -->
-
+                     <div class="card-footer text-center">
+                      <a href="{% url "notifications:notification-list" %}">See All Notifications</a>
+                    </div>  
                     <!-- /.card-footer-->
                   </div>
                   <!--/.direct-chat -->

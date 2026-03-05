@@ -34,3 +34,31 @@ class Notification(models.Model):
     def notification_time_formatted(self):
         return self.created_at.strftime("%d %b %I:%M %p")
     
+    @property
+    def icon_class(self):
+        model_name = self.content_type.model if self.content_type else None
+
+        icons = {
+            "project": "fas fa-comment bg-primary",
+            # "post": "fas fa-camera bg-purple",
+            "profile": "fas fa-user bg-info",
+        }
+
+        return icons.get(model_name, "fas fa-bell bg-secondary")
+    
+    @property
+    def tipo_contenido(self):
+        model_name = self.content_type.model if self.content_type else None
+
+        icons = {
+            "project": " actualizó un proyecto",
+            # "post": "fas fa-camera bg-purple",
+            "profile": " ha sido agregado",
+        }
+
+        return icons.get(model_name, " ha generado una nueva notificacion")
+    
+    def mark_as_read(self):
+        self.read = True
+        self.save(update_fields=["read"])
+    

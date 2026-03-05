@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% block title %}{{title }} |{{block.super}}{% endblock title %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% comment %} page specific css {% endcomment %}
+
+{% block page_css %}
+
+<!-- Ekko Lightbox -->
+<link rel="stylesheet" href="{% static " plugins/ekko-lightbox/ekko-lightbox.css" %} ">
+
+ <style>
+  .task-card {
+    cursor: grab;
+  }
+
+  .form-group {
+    display: flex;
+  }
+
+  #backlog h3 {
+    margin-right: 10px;
+  }
+
+ </style>
+{% endblock  %}
+
+{% block content %}
+ {% if messages %}
+             <div class="position-fixed" style="top: 15px; left: 50%; transform: translateX(-50%); z-index: 2000;">
+              {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{message.tags}}{% else %}alert-info{% endif %}">
+                {{message}}
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+ <div class=" container-fluid h-100">
+<div class="card card-row card-secondary board-column" id="backlog">
+  <div class="card-header d-flex justify-content-between">
+    <h3 class="card-title">
+      Backlog
+    </h3>
+    <form action="{% url "tasks:create-task-ajax" %}" method="POST" id="create-task-form">
+      <div class="form-group">
+        {% csrf_token %}
+        <input type="hidden" name="project_id" value="{{ project.id }}">
+        <input type="text" id="task-name" name="name" class="form control task-input" placeholder="New Task">
+      </div>
+    </form>
+    <button type="button" class="btn btn-sm btn-success ml-auto" data-toggle="modal" data-target="#modal-default"
+      data-status="backlog" ><i class="fa fa-plus-circle"></i>
+    </button>
+  </div>
+  <div class="card-body task-list">
+    {% for task in backlog_tasks %}
+    <div class="card card-primary card-outline task-card" data-task-id="{{ task.id }}">
+      <div class="card-header">
+        <h5 class="card-title">{{task.name}}</h5>
+        <div class="card-tools">
+          <a href="#" class="btn btn-tool btn-link task-counter">#{{forloop.counter}}</a>
+          <a href="#" class="btn btn-tool">
+            <i class="fas fa-pen"></i>
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          {{task.description}}
+        </p>
+      </div>
+      {% comment %} <div class="card-body">
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox1" disabled>
+          <label for="customCheckbox1" class="custom-control-label">Bug</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox2" disabled>
+          <label for="customCheckbox2" class="custom-control-label">Feature</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox3" disabled>
+          <label for="customCheckbox3" class="custom-control-label">Enhancement</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox4" disabled>
+          <label for="customCheckbox4" class="custom-control-label">Documentation</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="customCheckbox5" disabled>
+          <label for="customCheckbox5" class="custom-control-label">Examples</label>
+        </div>
+      </div> {% endcomment %}
+    </div>
+    {%endfor%}
+
+  </div>
+</div>
+<div class="card card-row card-primary board-column" id="to-do">
+  <div class="card-header">
+    <h3 class="card-title">
+      To Do
+    </h3>
+  </div>
+  <div class="card-body task-list">
+    {% for task in todo_tasks %}
+    <div class="card card-primary card-outline task-card" data-task-id="{{ task.id}}">
+      <div class="card-header">
+        <h5 class="card-title">{{task.name}}</h5>
+        <div class="card-tools">
+          <a href="#" class="btn btn-tool btn-link">#{{forloop.counter}}</a>
+          <a href="#" class="btn btn-tool">
+            <i class="fas fa-pen"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+<div class="card card-row card-default board-column" id="in-progress">
+  <div class="card-header bg-info">
+    <h3 class="card-title">
+      In Progress
+    </h3>
+  </div>
+  <div class="card-body task-list">
+    {% for task in in_progress_tasks %}
+    <div class="card card-light card-outline task-card" data-task-id="{{ task.id}}">
+      <div class="card-header">
+        <h5 class="card-title">{{task.name}}</h5>
+        <div class="card-tools">
+          <a href="#" class="btn btn-tool btn-link">#{{forloop.counter}}</a>
+          <a href="#" class="btn btn-tool">
+            <i class="fas fa-pen"></i>
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>
+          {{task.description}}
+        </p>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+<div class="card card-row card-success board-column" id="completed">
+  <div class="card-header">
+    <h3 class="card-title">
+      Done
+    </h3>
+  </div>
+  <div class="card-body task-list">
+    {% for task in completed_tasks %}
+    <div class="card card-primary card-outline task-card" data-task-id="{{ task.id}}">
+      <div class="card-header">
+        <h5 class="card-title">{{task.name}}</h5>
+        <div class="card-tools">
+          <a href="#" class="btn btn-tool btn-link">#{{forloop.counter}}</a>
+          <a href="#" class="btn btn-tool">
+            <i class="fas fa-pen"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">New Task</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="taskadd_form" action="{% url 'tasks:create-task' %}" method="post">
+        {% csrf_token %}
+
+        <input type="hidden" name="status" id="task_status_field">
+        <input type="hidden" name="project_id" id="task_project_field" value="{{ project.id }}">
+        <div class="modal-body">
+          {{ taskadd_form|crispy }}
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" name="task_submit" value="Guardar" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const taskCards = document.querySelectorAll('.task-card');
+    taskCards.forEach(card => {
+      card.draggable = true;
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', card.dataset.taskId);
+        console.log(card.dataset)
+      })
+    })
+  })
+
+  const columns = document.querySelectorAll('.board-column');
+  columns.forEach(column => {
+    column.addEventListener('dragover', (e) => {
+      e.preventDefault();
+
+      column.addEventListener('drop', (e) => {
+        const taskId = e.dataTransfer.getData('text/plain');
+        const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
+
+        //get new status
+        const newStatus = column.id.replace('-', ' ');
+
+
+        //move the task card to the new column
+        column.querySelector('.task-list').prepend(taskCard);
+
+        //update the class or color based on column
+        taskCard.classList.remove('card-primary', 'card-secondary', 'card-light', 'card-success');
+        switch (column.id) {
+          case 'backlog':
+            taskCard.classList.add('card-secondary');
+            break;
+
+          case 'to-do':
+          case 'in-progress':
+            taskCard.classList.add('card-primary');
+            break;
+
+          case 'completed':
+            taskCard.classList.add('card-success');
+            break;
+
+          default:
+            // opcional: si quieres un estilo por defecto
+            // taskCard.classList.add('card-light');
+            break;
+        }
+
+        //send ajax request to update task status
+        updateTaskStatus(taskId, newStatus);
+
+
+      })
+    });
+  })
+
+  //update status ajax
+  function updateTaskStatus(taskId, newStatus) {
+    fetch(`/tasks/update-task-status-ajax/${taskId}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Task status updated successfully');
+
+        } else {
+          console.error('Error updating task status')
+        }
+      });
+  }
+
+   // Bootstrap modal event: el botón que lo abrió viene en event.relatedTarget
+  $('#modal-default').on('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget);
+    const columnId = button.closest('.board-column').attr('id');    // backlog | to-do | in-progress | completed
+    $('#task_status_field').val(columnId);
+
+   
+  });
+
+  //submiting form on enter key
+  const taskForm = document.getElementById('create-task-form')
+  const taskInput = document.getElementById('task-name')
+  const backlogColumn = document.getElementById('backlog');
+
+  if (taskForm  && taskInput){
+    taskInput.addEventListener('keydown', function(event){
+      if (event.key === 'Enter'){
+        event.preventDefault()  
+        
+        const taskName = taskInput.value.trim();
+        if (taskName) {
+          const formData = new FormData(taskForm)
+            fetch(taskForm.action, {
+              method: taskForm.method,
+              body: formData,
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-Requested-With': 'XMLHttpRequest'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                console.log('Task created succesfully', data.task_id)
+                taskInput.value = '';
+                 //dynamically create the new task
+                const newTaskCard = document.createElement('div');
+                newTaskCard.classList.add('card', 'card-secondary', 'card-outline', 'task-card');
+                newTaskCard.setAttribute('data-task-id', data.task_id);
+                newTaskCard.draggable = true;
+
+                //add the task content
+                newTaskCard.innerHTML = `
+                <div class="card-header">
+                <h5 class="card-title">${taskName}</h5>
+                <div class="card-tools">
+                <a href="#" class="btn btn-tool btn-link task-counter"></a>
+                  <a href="#" class="btn btn-tool">
+                    <i class="fas fa-user-plus"></i>
+                </a>
+                <a href="#" class="btn btn-tool">
+                    <i class="fas fa-pen"></i>
+                </a>
+                </div>
+            </div>  
+                `;
+
+                //append new created task to backlog column
+                const backlogTaskList = backlogColumn.querySelector('.task-list');
+                backlogTaskList.prepend(newTaskCard);
+
+                //updating task counter
+                updateTaskCounters();
+
+                //add drag and drop listener to the newly created task
+                newTaskCard.addEventListener('dragstart', (e) => {
+                  e.dataTransfer.setData('text/plain', newTaskCard.dataset.taskId);
+                });
+
+              } else {
+                console.error('Error', data.error)
+              }
+            }).catch(error => {
+              console.error('Error creating task: ', error)
+            });
+        }else {
+          console.log('Task name is empty')
+        }
+      }
+    });
+  }else {
+    console.log('Form, input or project ID isnt found')
+  }
+
+  function updateTaskCounters(){
+    const backlogColumn = document.getElementById('backlog');
+   
+    const taskCards = backlogColumn.querySelectorAll('.task-card');
+taskCards.forEach((card, index) => {
+  const counter = card.querySelector('.task-counter');
+  if (counter) counter.textContent = `#${index + 1}`;
+});
+  }
+
+</script>
+{% endblock %}

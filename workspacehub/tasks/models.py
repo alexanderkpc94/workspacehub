@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 import uuid
 # Create your models here.
 STATUS_CHOICES = [
+    ('Backlog', 'Backlog'),
     ('To Do', 'To Do'),
     ('In Progress', 'In Progress'),
     ('Completed', 'Completed'),
@@ -20,7 +21,8 @@ class TaskQuerySet(models.QuerySet):
     def active(self):
         return self.filter(active=True)
     def upcoming(self):
-        return self.filter(due_date__gt=timezone.now())
+        return self.filter(
+            models.Q(due_date__gte=timezone.now()) | models.Q(due_date__isnull=True))
 
 class TaskManager(models.Manager):
     def get_queryset(self):
@@ -35,7 +37,7 @@ class Task(models.Model):
     name = models.CharField(max_length=250)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     description = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='To Do')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Backlog')
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
     start_date = models.DateField(blank=True, null=True)
     due_date = models.DateField(blank=True, null=True)

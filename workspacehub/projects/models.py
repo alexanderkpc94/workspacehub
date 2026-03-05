@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from teams.models import Team
 from .extra import STATUS_CHOICES, PRIORITY_CHOICES
+from datetime import datetime
 # Create your models here.
 
 
@@ -83,3 +84,21 @@ class Project(models.Model):
             return '#f2c745'
         else:
             return '#72e7a3'
+        
+
+#project file location
+def project_attachment_path_location(instance, filename):
+    # get todays date YYYY-MM-DD format
+    today_date = datetime.now().strftime('%Y-%m-%d')
+    #return the upload path
+    return "attachments/%s/%s/%s" % (instance.project.name, today_date, filename)
+   
+
+class Attachment(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='attachments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attachments')
+    file = models.FileField(upload_to=project_attachment_path_location)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Attachment by {self.user.username} on {self.project.name}"

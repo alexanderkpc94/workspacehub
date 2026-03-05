@@ -5,9 +5,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WorkSpaceHub | Dashboard</title>
+  <title>{% block title %}WorkSpaceHub{% endblock %}</title>
 
   {% include 'components/css.html' %}
+
+  {% block page_css %} {% endblock %}
+
   <script
   src="https://code.jquery.com/jquery-3.2.1.js"
   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
@@ -29,7 +32,7 @@
     {% include 'components/sidebar.html' %}
    
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper{% if is_kanban %} kanban{% endif %}">
       <!-- Content Header (Page header) -->
       <div class="content-header">
       {% include "components/content_header.html" %}
@@ -57,6 +60,9 @@
   <!-- ./wrapper -->
 
   {% include 'components/javascript.html' %}
+
+  {% block script %} {% endblock %}
+
 </body>
 
 </html>

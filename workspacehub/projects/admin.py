@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Project
+from .models import Project, Attachment
 from notifications.task import create_notification
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'team', 'status', 'priority', 'start_date', 'due_date')
@@ -19,3 +19,4 @@ class ProjectAdmin(admin.ModelAdmin):
         create_notification.delay(actor_username, message, object_id)
 
 admin.site.register(Project)
+admin.site.register(Attachment)
