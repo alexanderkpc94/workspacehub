@@ -59,7 +59,7 @@
         <h5 class="card-title">{{task.name}}</h5>
         <div class="card-tools">
           <a href="#" class="btn btn-tool btn-link task-counter">#{{forloop.counter}}</a>
-          <a href="#" class="btn btn-tool">
+          <a href="#" class="btn btn-tool update-task-button">
             <i class="fas fa-pen"></i>
           </a>
         </div>
@@ -196,6 +196,36 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
+
+
+<div class="modal fade" id="modal-update">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Update Task</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="taskupdate_form" action="" method="post">
+        {% csrf_token %}
+
+        <input type="hidden" name="task_id" id="task_id">
+        <input type="hidden" name="project_id" id="task_project_field" value="{{ project.id }}">
+        <div class="modal-body">
+          {{ taskadd_form|crispy }}
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" name="task_submit" value="Guardar" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 
 
 {% endblock %}
@@ -368,11 +398,49 @@
     const backlogColumn = document.getElementById('backlog');
    
     const taskCards = backlogColumn.querySelectorAll('.task-card');
-taskCards.forEach((card, index) => {
-  const counter = card.querySelector('.task-counter');
-  if (counter) counter.textContent = `#${index + 1}`;
-});
+    taskCards.forEach((card, index) => {
+      const counter = card.querySelector('.task-counter');
+      if (counter) counter.textContent = `#${index + 1}`;
+    });
   }
+
+  /*$(function() {
+        $("#update-task-button").click(function(){
+          
+        });
+      });*/
+
+      const editIcons = document.querySelectorAll('.update-task-button');
+
+      editIcons.forEach(icon =>{
+        icon.addEventListener('click', function(event){
+          event.preventDefault();
+          currentTaskId = this.closest('.task-card').dataset.taskId;
+          
+          fetch(`/tasks/${currentTaskId}/get`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+          }).then(response => response.json())
+            .then(data => {
+                if(data.error){
+                  console.log('Task not found')
+                  return;
+              }
+              const taskUpdateModal = $('#modal-update');
+              const task = data.task_data;
+              const form = taskUpdateModal.find('form');
+
+              Object.entries(task).forEach(([key, value]) => {
+                form.find(`[name="${key}"]`).val(value ?? '');
+                console.log(key,value);
+              });
+
+              taskUpdateModal.modal('show');
+            }).catch(error => console.error(error));
+        });  
+      })
 
 </script>
 {% endblock %}
