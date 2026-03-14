@@ -21,7 +21,9 @@
   #backlog h3 {
     margin-right: 10px;
   }
-
+ .card-description:empty {
+      display: none;
+    }
  </style>
 {% endblock  %}
 
@@ -64,12 +66,20 @@
           </a>
         </div>
       </div>
-      <div class="card-body">
+       {% comment %} task description {% endcomment %}
+        
+            <div class="card-body">
+              <p class="card-description">{{ task.description|default:'' }}</p>
+            </div>       
+                      
+   
+      {% comment %} 
+         <div class="card-body">
         <p>
           {{task.description}}
         </p>
       </div>
-      {% comment %} <div class="card-body">
+      <div class="card-body">
         <div class="custom-control custom-checkbox">
           <input class="custom-control-input" type="checkbox" id="customCheckbox1" disabled>
           <label for="customCheckbox1" class="custom-control-label">Bug</label>
@@ -114,6 +124,12 @@
           </a>
         </div>
       </div>
+       {% comment %} task description {% endcomment %}
+           
+            <div class="card-body">
+              <p class="card-description">{{ task.description|default:'' }}</p>
+            </div>     
+          
     </div>
     {%endfor%}
   </div>
@@ -136,11 +152,13 @@
           </a>
         </div>
       </div>
-      <div class="card-body">
-        <p>
-          {{task.description}}
-        </p>
-      </div>
+       {% comment %} task description {% endcomment %}
+            
+           <div class="card-body">
+                <p class="card-description">{{ task.description|default:'' }}</p>
+              </div>      
+           
+           
     </div>
     {%endfor%}
   </div>
@@ -163,7 +181,11 @@
           </a>
         </div>
       </div>
-    </div>
+       {% comment %} task description {% endcomment %}
+          <div class="card-body">
+            <p class="card-description">{{ task.description|default:'' }}</p>
+          </div>
+    
     {%endfor%}
   </div>
 </div>
@@ -207,17 +229,17 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="taskupdate_form" action="" method="post">
+      <form id="taskupdate_form" method="post">
         {% csrf_token %}
 
         <input type="hidden" name="task_id" id="task_id">
         <input type="hidden" name="project_id" id="task_project_field" value="{{ project.id }}">
         <div class="modal-body">
-          {{ taskadd_form|crispy }}
+          {{ form|crispy }}
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <input type="submit" name="task_submit" value="Guardar" class="btn btn-primary">
+          <input type="submit" name="task_submit" value="Save" class="btn btn-primary">
         </div>
       </form>
     </div>
@@ -417,7 +439,7 @@
           event.preventDefault();
           currentTaskId = this.closest('.task-card').dataset.taskId;
           
-          fetch(`/tasks/${currentTaskId}/get`,{
+          fetch(`/tasks/${currentTaskId}/get/`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -433,7 +455,7 @@
               const form = taskUpdateModal.find('form');
 
               Object.entries(task).forEach(([key, value]) => {
-                form.find(`[name="${key}"]`).val(value ?? '');
+                form.find(`[name="edit-${key}"]`).val(value ?? '');
                 console.log(key,value);
               });
 
@@ -441,6 +463,36 @@
             }).catch(error => console.error(error));
         });  
       })
+
+      let currentTaskId = null;
+      const modal = $('#modal-update');
+      const form = modal.find('#taskupdate_form');
+
+      form.on('submit', function (event) {
+          event.preventDefault();
+          const formData = new FormData(this);
+          fetch(`/tasks/${currentTaskId}/update/`,{
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              }
+          }).then(response => response.json())
+          .then(data => {
+            if (data.success){
+              document.querySelector(`.task-card[data-task-id="${currentTaskId}"] .card-title`).textContent = data.updatedTask.name
+              let descriptionElement = document.querySelector(`.task-card[data-task-id="${currentTaskId}"] .card-description`);
+               if(descriptionElement){
+                descriptionElement.textContent = data.updatedTask.description;
+              }
+              modal.modal('hide')
+            } else {
+              console.error("Error updating task: ", data.error)
+              
+            }
+          }).catch(error => console.error("Error", error))
+      });
+      
 
 </script>
 {% endblock %}

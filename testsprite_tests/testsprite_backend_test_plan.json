@@ -1,0 +1,47 @@
+[
+  {
+    "id": "TC001",
+    "title": "userregistrationendpoint",
+    "description": "Test user registration endpoint for successful user creation with valid data and proper error handling for invalid inputs."
+  },
+  {
+    "id": "TC002",
+    "title": "userprofilemanagementendpoint",
+    "description": "Verify user profile management endpoint allows updating and retrieving user profile information correctly."
+  },
+  {
+    "id": "TC003",
+    "title": "projectcreationendpoint",
+    "description": "Test project creation endpoint to ensure projects can be created with valid data and proper validation errors are returned for invalid data."
+  },
+  {
+    "id": "TC004",
+    "title": "projectcrudoperationsendpoint",
+    "description": "Verify CRUD operations on projects including retrieval, update, and deletion work as expected with correct status codes."
+  },
+  {
+    "id": "TC005",
+    "title": "kanbanboardfunctionalityendpoint",
+    "description": "Test Kanban board related endpoints to ensure tasks can be moved across different statuses and the board reflects changes accurately."
+  },
+  {
+    "id": "TC006",
+    "title": "taskcreationendpoint",
+    "description": "Verify task creation endpoint allows creating tasks with valid data and returns appropriate errors for invalid inputs."
+  },
+  {
+    "id": "TC007",
+    "title": "taskcrudoperationsendpoint",
+    "description": "Test CRUD operations for tasks including updating task details, status tracking, and deletion with correct responses."
+  },
+  {
+    "id": "TC008",
+    "title": "teamcreationendpoint",
+    "description": "Verify team creation endpoint allows creating teams with valid data and handles errors for invalid inputs."
+  },
+  {
+    "id": "TC009",
+    "title": "teammembermanagementendpoint",
+    "description": "Test team member management endpoints to ensure members can be added, removed, and listed correctly within a team."
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "status": "init",
+  "scope": "codebase",
+  "type": "backend",
+  "localEndpoint": "http://localhost:8000/",
+  "serverPort": 52189,
+  "executionArgs": {
+    "projectName": "workspacehub",
+    "projectPath": "C:\\Users\\KEVIN\\Documents\\Django\\workspacehub",
+    "testIds": [
+      "TC001",
+      "TC005",
+      "TC006",
+      "TC007"
+    ],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-PxqWdtb3GtZQchxdQX9P3-jpAVGqvHmsHrq9NgJm3T8LVYGbc2Ip8ML23JnCEtN2ZC5Ld6avuSsV0YgmrPFM6zTWfa-Ln4EG0jfvNE_puUQkrLhNnWW_nXn3_Ak_fJcdQ8o"
+    }
+  },
+  "proxy": "http://75a1b93e-59d3-4f91-a7f2-1abc0ac8a261:JZqHp4JaOV1D1YfvfoD9kF20Q5prLpKS@tun.testsprite.com:8080"
+}

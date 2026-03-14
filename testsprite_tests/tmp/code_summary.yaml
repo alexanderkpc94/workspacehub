@@ -1,0 +1,84 @@
+version: "2"
+type: backend
+tech_stack:
+  - language: Python
+  - framework: Django 4.2
+  - database: SQLite
+  - other: Django REST Framework
+features:
+  - name: User Authentication
+    description: User registration and profile management
+    files:
+      - workspacehub/accounts/models.py
+      - workspacehub/accounts/views.py
+      - workspacehub/accounts/forms.py
+    endpoints:
+      - method: GET
+        path: /dashboard/
+        description: User dashboard
+        auth_required: true
+      - method: GET
+        path: /members/
+        description: List all team members
+        auth_required: true
+      - method: POST
+        path: /register/
+        description: User registration
+        auth_required: false
+
+  - name: Project Management
+    description: CRUD operations for projects with Kanban board
+    files:
+      - workspacehub/projects/models.py
+      - workspacehub/projects/views.py
+      - workspacehub/projects/forms.py
+    endpoints:
+      - method: GET
+        path: /projects/
+        description: List all projects
+        auth_required: true
+      - method: POST
+        path: /projects/create/
+        description: Create new project
+        auth_required: true
+      - method: GET
+        path: /projects/<id>/
+        description: Project detail view
+        auth_required: true
+      - method: GET
+        path: /projects/<id>/kanban/
+        description: Kanban board view
+        auth_required: true
+
+  - name: Task Management
+    description: CRUD operations for tasks with status tracking
+    files:
+      - workspacehub/tasks/models.py
+      - workspacehub/tasks/views.py
+      - workspacehub/tasks/forms.py
+    endpoints:
+      - method: GET
+        path: /tasks/
+        description: List all tasks
+        auth_required: true
+      - method: POST
+        path: /tasks/create/
+        description: Create new task
+        auth_required: true
+      - method: POST
+        path: /tasks/<id>/update/
+        description: Update task status
+        auth_required: true
+
+  - name: Team Management
+    description: Team creation and member management
+    files:
+      - workspacehub/teams/models.py
+      - workspacehub/teams/views.py
+    endpoints:
+      - method: GET
+        path: /teams/
+        description: List all teams
+        auth_required: true
+
+known_limitations: []

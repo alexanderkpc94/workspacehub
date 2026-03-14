@@ -1,0 +1,32 @@
+{
+  "project_name": "workspacehub",
+  "project_type": "backend",
+  "description": "Django project management system with Kanban boards, task tracking, and team management",
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "User registration and profile management",
+      "priority": "high"
+    },
+    {
+      "name": "Project Management",
+      "description": "CRUD operations for projects with Kanban board",
+      "priority": "high"
+    },
+    {
+      "name": "Task Management",
+      "description": "CRUD operations for tasks with status tracking",
+      "priority": "high"
+    },
+    {
+      "name": "Team Management",
+      "description": "Team creation and member management",
+      "priority": "medium"
+    }
+  ],
+  "tech_stack": {
+    "language": "Python",
+    "framework": "Django 4.2",
+    "database": "SQLite"
+  }
+}
